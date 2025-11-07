@@ -11,26 +11,26 @@ Post installation script for fedora
 
 ### AMD
 
-`wget https://raw.githubusercontent.com/Spicy-Steve/fedorafy/main/unattended/amd/fedorafy-unattended-amd.sh && sudo sh fedorafy.sh`
+`wget https://raw.githubusercontent.com/Spicy-Steve/fedorafy/main/unattended/amd/fedorafy-unattended-amd.sh && sudo sh fedorafy-unattended-amd.sh`
 
 ##### GAMING ADDITIONS
 
-`wget https://raw.githubusercontent.com/Spicy-Steve/fedorafy/main/unattended/amd/fedorafy-unattended-amd-gaming.sh && sudo sh fedorafy.sh`
+`wget https://raw.githubusercontent.com/Spicy-Steve/fedorafy/main/unattended/amd/fedorafy-unattended-amd-gaming.sh && sudo sh fedorafy-unattended-amd-gaming.sh`
 <br><br>
 
 ### INTEL
 
-`wget https://raw.githubusercontent.com/Spicy-Steve/fedorafy/main/unattended/intel/fedorafy-unattended-intel.sh && sudo sh fedorafy.sh`
+`wget https://raw.githubusercontent.com/Spicy-Steve/fedorafy/main/unattended/intel/fedorafy-unattended-intel.sh && sudo sh fedorafy-unattended-intel.sh`
 
 ##### GAMING ADDITIONS
 
-`wget https://raw.githubusercontent.com/Spicy-Steve/fedorafy/main/unattended/intel/fedorafy-unattended-intel-gaming.sh && sudo sh fedorafy.sh`
+`wget https://raw.githubusercontent.com/Spicy-Steve/fedorafy/main/unattended/intel/fedorafy-unattended-intel-gaming.sh && sudo sh fedorafy-intel-gaming.sh`
 <br><br>
 
 ### NVIDIA
 
-`wget https://raw.githubusercontent.com/Spicy-Steve/fedorafy/main/unattended/nvidia/fedorafy-unattended-nvidia.sh && sudo sh fedorafy.sh`
+`wget https://raw.githubusercontent.com/Spicy-Steve/fedorafy/main/unattended/nvidia/fedorafy-unattended-nvidia.sh && sudo sh fedorafy-unattended-nvidia.sh`
 
 ##### GAMING ADDITIONS
 
-`wget https://raw.githubusercontent.com/Spicy-Steve/fedorafy/main/unattended/nvidia/fedorafy-unattended-nvidia-gaming.sh && sudo sh fedorafy.sh`
+`wget https://raw.githubusercontent.com/Spicy-Steve/fedorafy/main/unattended/nvidia/fedorafy-unattended-nvidia-gaming.sh && sudo sh fedorafy-unattended-nvidia-gaming.sh`
