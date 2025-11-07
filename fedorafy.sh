@@ -81,7 +81,7 @@ if [ $gpu = "amd" ]; then
 
 elif [ $gpu = "intel" ]; then
     echo "Installing GPU accelerated media packages for Intel..."
-    dnf install -y intel-media-driver libva-utils 
+    dnf install -y intel-media-driver libva-utils
 
 elif [ $gpu = "nvidia"]; then
     echo "Installing NVIDIA driver and GPU accelerated media packages..."
