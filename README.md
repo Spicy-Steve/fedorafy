@@ -16,8 +16,7 @@ Post installation script for fedora
 ##### GAMING ADDITIONS
 
 `wget https://raw.githubusercontent.com/Spicy-Steve/fedorafy/main/unattended/amd/fedorafy-unattended-amd-gaming.sh && sudo sh fedorafy.sh`
-
-<br>
+<br><br>
 
 ### INTEL
 
@@ -26,8 +25,7 @@ Post installation script for fedora
 ##### GAMING ADDITIONS
 
 `wget https://raw.githubusercontent.com/Spicy-Steve/fedorafy/main/unattended/intel/fedorafy-unattended-intel-gaming.sh && sudo sh fedorafy.sh`
-
-<br>
+<br><br>
 
 ### NVIDIA
 
