@@ -6,7 +6,7 @@ fi
 
 # === Info ===
 echo "This script is intended to be ran on a fresh installation of Fedora, last updated for verison 43"
-echo "For unattended versions of this script, download one of the other scripts from "
+echo "For unattended versions of this script, download one of the other scripts from my repo"
 read -p "Do you wish to being setup? [Y/n]" start
 start=${start,,}
 if [[ $start = "y" || $start = "yes" || -z $start ]]; then
@@ -74,7 +74,8 @@ if [ $gpu = "amd" ]; then
         dnf config-manager --enable codeready-builder-for-rhel-10-x86_64-rpms
         dnf install -y python3-setuptools python3-wheel
         
-        echo "Installing ROCm..."usermod -a -G render,video $LOGNAME # Add the current user to the render and video groups
+        echo "Installing ROCm..."
+        usermod -a -G render,video $LOGNAME # Add the current user to the render and video groups
         dnf install -y rocm
     fi
 
@@ -103,12 +104,14 @@ fi
 read -p "Would you like to enable flatpak? [Y/n]" fpkrepo
 fpkrepo=${fpkrepo,,}
 if [[ $fpkrepo = "y" || $fpkrepo = "yes" || -z $fpkrepo ]]; then
+    echo "Enabling flatpak repository..."
     flatpak remote-add --if-not-exists flathub https://dl.flathub.org/repo/flathub.flatpakrepo
 
     # === Ask for flatpaks ===
     read -p "Would you like to install essential flatpaks? [Y/n]" fpk
     fpk=${fpk,,}
     if [[ $fpk = "y" || $fpk = "yes" || -z $fpk ]]; then
+        echo "Installing essential flatpaks..." 
         flatpak install -y com.github.tchx84.Flatseal org.localsend.localsend_app com.dec05eba.gpu_screen_recorder
     else
         echo "Skipping..."
@@ -119,7 +122,6 @@ else
     continue
 fi
 
-
 # === Ask for gaming packages ===
 read -p "Would you like to install essential gaming packages? [Y/n]" game
 game=${game,,}
@@ -128,9 +130,14 @@ if [[ $game = "y" || $game = "yes" || -z $game ]]; then
     dnf install -y steam goverlay wine
 
     if [[ $fpkrepo = "y" || $fpkrepo = "yes" || -z $fpkrepo ]]; then
+        echo "Installing gaming flatpaks..."
         flatpak install -y com.github.Matoking. protontricks net.davidotek.pupgui2
     fi
+else
+    echo "Skipping..."
+    continue
 fi
+
 # === Self deletion after everything ===
 echo "Cleaning up..."
 trap 'rm -f -- "$0"' EXIT
