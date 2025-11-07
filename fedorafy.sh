@@ -13,6 +13,13 @@ else
     exit 1
 fi
 
+# === Prevent usage if dnf is not found ===
+if ! command -v dnf &> /dev/null; then
+    echo "Something has gone terribly wrong, dnf was not found!"
+    echo "Try to remedy this by installing dnf (if this is Fedora, of course) or by reinstalling Fedora from https://fedoraproject.org (legitimate site)
+    exit 1
+fi
+
 # === Add RPM Fusion repo ===
 echo "Adding required repositories..."
 dnf install -y https://mirrors.rpmfusion.org/free/fedora/rpmfusion-free-release-$(rpm -E %fedora).noarch.rpm https://mirrors.rpmfusion.org/nonfree/fedora/rpmfusion-nonfree-release-$(rpm -E %fedora).noarch.rpm
