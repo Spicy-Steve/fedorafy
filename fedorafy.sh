@@ -9,7 +9,7 @@ echo "This script is intended to be ran on a fresh installation of Fedora, last 
 echo "For unattended versions of this script, download one of the other scripts from "
 read -p "Do you wish to being setup? [Y/n]" start
 start=${start,,}
-if [[ $start = "y" || $start ="yes" || -z $start ]]; then
+if [[ $start = "y" || $start = "yes" || -z $start ]]; then
     continue
 else
     exit 1
@@ -126,7 +126,7 @@ game=${game,,}
 if [[ $game = "y" || $game = "yes" || -z $game ]]; then
     echo "Installing essential gaming packages..."
     dnf install -y steam goverlay wine
-    
+
     if [[ $fpkrepo = "y" || $fpkrepo = "yes" || -z $fpkrepo ]]; then
         flatpak install -y com.github.Matoking. protontricks net.davidotek.pupgui2
     fi
