@@ -7,12 +7,11 @@ fi
 # === Detect distro ===
 if [ -f /etc/fedora-release ]; then
     echo "Fedora detected!"
+    echo "Starting post-install setup for $USER"
 else
     echo "You are not running Fedora! Stopping script..."
     exit 1
 fi
-
-echo "Starting post-install setup for $USER"
 
 # === Add RPM Fusion repo ===
 echo "Adding required repositories..."
@@ -51,7 +50,7 @@ if [ $gpu = "amd" ]; then
 elif [ $gpu = "intel" ]; then
     echo "Installing GPU acceleration packages for Intel..."
     dnf install -y intel-media-driver
-elif [ $gpu = "nvidia"; then
+elif [ $gpu = "nvidia"]; then
     echo "Installing NVIDIA driver and GPU acceleration packages..."
     dnf install -y akmod-nvidia xorg-x11-drv-nvidia-cuda libva-nvidia-driver
 else
@@ -60,6 +59,6 @@ fi
 
 # === Optionally install flatpak ===
 read -p "Would you like to enable flatpak? [Y/n]" fpk
-if [ $fpk = "y" ] || [ $fpk = "yes" ] || [ -z $fpk ]; then
+if [[ $fpk = "y" || $fpk = "yes" || -z $fpk ]]; then
     flatpak remote-add --if-not-exists flathub https://dl.flathub.org/repo/flathub.flatpakrepo
 fi
