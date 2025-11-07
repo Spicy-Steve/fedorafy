@@ -105,6 +105,9 @@ if [[ $fpk = "y" || $fpk = "yes" || -z $fpk ]]; then
     flatpak remote-add --if-not-exists flathub https://dl.flathub.org/repo/flathub.flatpakrepo
 fi
 
+# === Ask for gaming packages ===
+dnf install steam goverlay
+
 # === Self deletion after everything ===
 echo "Cleaning up..."
 trap 'rm -f -- "$0"' EXIT
