@@ -16,7 +16,7 @@ fi
 # === Prevent usage if dnf is not found ===
 if ! command -v dnf &> /dev/null; then
     echo "Something has gone terribly wrong, dnf was not found!"
-    echo "Try to remedy this by installing dnf (if this is Fedora, of course) or by reinstalling Fedora from https://fedoraproject.org (legitimate site)
+    echo "Try to remedy this by installing dnf (if this is Fedora, of course) or by reinstalling Fedora from https://fedoraproject.org (legitimate site)"
     exit 1
 fi
 
@@ -38,15 +38,33 @@ dnf install -y rpmfusion-free-release-tainted
 dnf install -y libdvdcss
 
 # === Install GPU acceleration packages and NVIDIA driver ===
-echo "What is your GPU vendor?"
-echo "Please enter AMD/NVIDIA/Intel"
-read gpu
-gpu=${gpu,,}
+#echo "What is your GPU vendor?"
+#echo "Please enter AMD/NVIDIA/Intel"
+#read gpu
+#gpu=${gpu,,}
+
+# === (Test for now) Loop until valid vendor is entered ===
+while true; do
+    read -p "Enter GPU vendor (AMD/NVIDIA/Intel): " gpu
+    gpu=${gpu,,}
+    case "$gpu" in
+        amd|intel|nvidia)
+            break
+            ;;
+        *)
+            echo "Invalid entry. Please enter AMD, NVIDIA, or Intel."
+            ;;
+    esac
+done
 
 if [ $gpu = "amd" ]; then
-    echo "Adding ROCm repository..."
-    dnf config-manager --add-repo=https://repo.radeon.com/rocm/yum/fedora/rocm.repo
-
+    read -p "Would you like to install ROCm? (recommended for broad compatibility) [Y/n]" rocm
+    rocm=${rocm,,}
+    if [[ $rocm = "y" || $rocm = "yes" || -z $rocm ]]; then
+        echo "Adding ROCm repository..."
+        dnf config-manager --add-repo=https://repo.radeon.com/rocm/yum/fedora/rocm.repo
+    fi
+    # FINISH ROCM PORTION
     echo "Installing ROCm..."
     dnf install -y rocm-dkms rocm-utils rocm-libs rocm-dev
     dnf install -y hipblas rocrand rocthrust rocfft
