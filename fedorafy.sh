@@ -100,14 +100,37 @@ elif [ $gpu = "nvidia"]; then
 fi
 
 # === Optionally install flatpak ===
-read -p "Would you like to enable flatpak? [Y/n]" fpk
-if [[ $fpk = "y" || $fpk = "yes" || -z $fpk ]]; then
+read -p "Would you like to enable flatpak? [Y/n]" fpkrepo
+fpkrepo=${fpkrepo,,}
+if [[ $fpkrepo = "y" || $fpkrepo = "yes" || -z $fpkrepo ]]; then
     flatpak remote-add --if-not-exists flathub https://dl.flathub.org/repo/flathub.flatpakrepo
+
+    # === Ask for flatpaks ===
+    read -p "Would you like to install essential flatpaks? [Y/n]" fpk
+    fpk=${fpk,,}
+    if [[ $fpk = "y" || $fpk = "yes" || -z $fpk ]]; then
+        flatpak install -y com.github.tchx84.Flatseal org.localsend.localsend_app com.dec05eba.gpu_screen_recorder
+    else
+        echo "Skipping..."
+        continue
+    fi
+else
+    echo "Skipping..."
+    continue
 fi
 
-# === Ask for gaming packages ===
-dnf install steam goverlay
 
+# === Ask for gaming packages ===
+read -p "Would you like to install essential gaming packages? [Y/n]" game
+game=${game,,}
+if [[ $game = "y" || $game = "yes" || -z $game ]]; then
+    echo "Installing essential gaming packages..."
+    dnf install -y steam goverlay wine
+    
+    if [[ $fpkrepo = "y" || $fpkrepo = "yes" || -z $fpkrepo ]]; then
+        flatpak install -y com.github.Matoking. protontricks net.davidotek.pupgui2
+    fi
+fi
 # === Self deletion after everything ===
 echo "Cleaning up..."
 trap 'rm -f -- "$0"' EXIT
