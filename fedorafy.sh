@@ -4,10 +4,21 @@ if [[ $EUID -ne 0 ]]; then
     exit 1
 fi
 
+# === Info ===
+echo "This script is intended to be ran on a fresh installation of Fedora, last updated for verison 43"
+echo "For unattended versions of this script, download one of the other scripts from "
+read -p "Do you wish to being setup? [Y/n]" start
+start=${start,,}
+if [[ $start = "y" || $start ="yes" || -z $start ]]; then
+    continue
+else
+    exit 1
+fi
+
 # === Detect distro ===
 if [ -f /etc/fedora-release ]; then
     echo "Fedora detected!"
-    echo "Starting post-install setup for $USER"
+    echo "Starting post-install setup..."
 else
     echo "You are not running Fedora! Stopping script..."
     exit 1
@@ -19,6 +30,10 @@ if ! command -v dnf &> /dev/null; then
     echo "Try to remedy this by installing dnf (if this is Fedora, of course) or by reinstalling Fedora from https://fedoraproject.org (legitimate site)"
     exit 1
 fi
+
+# === Set DNF defaultyes to "Y" ===
+echo "Setting DNF to assume 'yes' for all prompts..."
+echo "defaultyes=True" >> /etc/dnf/dnf.conf
 
 # === Add RPM Fusion media repo ===
 echo "Adding required repositories..."
@@ -47,19 +62,21 @@ while true; do
 done
 
 if [ $gpu = "amd" ]; then
-    read -p "Would you like to install ROCm? (recommended for broad compatibility) [Y/n]" rocm
+    echo "Installing GPU accelerated media packages for AMD..."
+    dnf install -y mesa-vdpau-drivers libva-utils
+
+    read -p "Would you like to install ROCm? (recommended for Machine Learning) [Y/n]" rocm
     rocm=${rocm,,}
     if [[ $rocm = "y" || $rocm = "yes" || -z $rocm ]]; then
         echo "Adding ROCm repository..."
-        dnf config-manager --add-repo=https://repo.radeon.com/rocm/yum/fedora/rocm.repo
-
-        echo "Installing ROCm..."
-        dnf install -y rocm-dkms rocm-utils rocm-libs rocm-dev
-        dnf install -y hipblas rocrand rocthrust rocfft
+        wget https://dl.fedoraproject.org/pub/epel/epel-release-latest-10.noarch.rpm
+        rpm -ivh epel-release-latest-10.noarch.rpm
+        dnf config-manager --enable codeready-builder-for-rhel-10-x86_64-rpms
+        dnf install -y python3-setuptools python3-wheel
+        
+        echo "Installing ROCm..."usermod -a -G render,video $LOGNAME # Add the current user to the render and video groups
+        dnf install -y rocm
     fi
-
-    echo "Installing GPU accelerated media packages for AMD..."
-    dnf install -y mesa-vdpau-drivers libva-utils
 
 elif [ $gpu = "intel" ]; then
     echo "Installing GPU accelerated media packages for Intel..."
@@ -80,13 +97,21 @@ elif [ $gpu = "nvidia"]; then
         dnf config-manager setopt cuda-fedora42-$(uname -m).exclude=nvidia-driver,nvidia-modprobe,nvidia-persistenced,nvidia-settings,nvidia-libXNVCtrl,nvidia-xconfig
         dnf -y install cuda-toolkit xorg-x11-drv-nvidia-cuda
     fi
-
-else
-    echo "Invalid GPU vendor entered, re-run the script to try again..."
 fi
 
 # === Optionally install flatpak ===
 read -p "Would you like to enable flatpak? [Y/n]" fpk
 if [[ $fpk = "y" || $fpk = "yes" || -z $fpk ]]; then
     flatpak remote-add --if-not-exists flathub https://dl.flathub.org/repo/flathub.flatpakrepo
+fi
+
+# === Self deletion after everything ===
+echo "Cleaning up..."
+trap 'rm -f -- "$0"' EXIT
+
+echo "=== Setup Complete! ==="
+read -p "Do you wish to reboot? (please make sure everything is saved) [Y/n]" reboot
+reboot=${reboot,,}
+if [[ $reboot = "y" || $reboot = "yes" || -z $reboot ]]; then
+    reboot now
 fi
