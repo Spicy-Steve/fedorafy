@@ -20,7 +20,7 @@ if ! command -v dnf &> /dev/null; then
     exit 1
 fi
 
-# === Add RPM Fusion repo ===
+# === Add RPM Fusion media repo ===
 echo "Adding required repositories..."
 dnf install -y https://mirrors.rpmfusion.org/free/fedora/rpmfusion-free-release-$(rpm -E %fedora).noarch.rpm https://mirrors.rpmfusion.org/nonfree/fedora/rpmfusion-nonfree-release-$(rpm -E %fedora).noarch.rpm
 
@@ -32,18 +32,7 @@ dnf update -y
 echo "Installing full media codec support..."
 dnf swap ffmpeg-free ffmpeg --allowerasing -y
 
-# === DVD Support ===
-echo "Installing packages for DVDs..."
-dnf install -y rpmfusion-free-release-tainted
-dnf install -y libdvdcss
-
 # === Install GPU acceleration packages and NVIDIA driver ===
-#echo "What is your GPU vendor?"
-#echo "Please enter AMD/NVIDIA/Intel"
-#read gpu
-#gpu=${gpu,,}
-
-# === (Test for now) Loop until valid vendor is entered ===
 while true; do
     read -p "Enter GPU vendor (AMD/NVIDIA/Intel): " gpu
     gpu=${gpu,,}
@@ -63,21 +52,35 @@ if [ $gpu = "amd" ]; then
     if [[ $rocm = "y" || $rocm = "yes" || -z $rocm ]]; then
         echo "Adding ROCm repository..."
         dnf config-manager --add-repo=https://repo.radeon.com/rocm/yum/fedora/rocm.repo
-    fi
-    # FINISH ROCM PORTION
-    echo "Installing ROCm..."
-    dnf install -y rocm-dkms rocm-utils rocm-libs rocm-dev
-    dnf install -y hipblas rocrand rocthrust rocfft
 
-    echo "Installing ROCm & codec packages for AMD..."
-    dnf swap -y mesa-va-drivers mesa-va-drivers-freeworld
-    dnf swap -y mesa-vdpau-drivers mesa-vdpau-drivers-freeworld
+        echo "Installing ROCm..."
+        dnf install -y rocm-dkms rocm-utils rocm-libs rocm-dev
+        dnf install -y hipblas rocrand rocthrust rocfft
+    fi
+
+    echo "Installing GPU accelerated media packages for AMD..."
+    dnf install -y mesa-vdpau-drivers libva-utils
+
 elif [ $gpu = "intel" ]; then
-    echo "Installing GPU acceleration packages for Intel..."
-    dnf install -y intel-media-driver
+    echo "Installing GPU accelerated media packages for Intel..."
+    dnf install -y intel-media-driver libva-utils 
+
 elif [ $gpu = "nvidia"]; then
-    echo "Installing NVIDIA driver and GPU acceleration packages..."
+    echo "Installing NVIDIA driver and GPU accelerated media packages..."
     dnf install -y akmod-nvidia xorg-x11-drv-nvidia-cuda libva-nvidia-driver
+
+    read -p "Would you like to install additional CUDA libraries? (reccomended for Machine Learning) [Y/n]" mlcuda
+    mlcuda=${mlcuda,,}
+    if [[ $mlcuda = "y" || $mlcuda = "yes" || -z $mlcuda ]]; then
+        echo "Adding CUDA repository..."
+        dnf config-manager addrepo --from-repofile=https://developer.download.nvidia.com/compute/cuda/repos/fedora42/$(uname -m)/cuda-fedora42.repo
+        dnf clean all
+
+        echo "Installing additional CUDA libraries..."
+        dnf config-manager setopt cuda-fedora42-$(uname -m).exclude=nvidia-driver,nvidia-modprobe,nvidia-persistenced,nvidia-settings,nvidia-libXNVCtrl,nvidia-xconfig
+        dnf -y install cuda-toolkit xorg-x11-drv-nvidia-cuda
+    fi
+
 else
     echo "Invalid GPU vendor entered, re-run the script to try again..."
 fi
