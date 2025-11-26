@@ -131,11 +131,25 @@ if [[ $game = "y" || $game = "yes" || -z $game ]]; then
 
     if [[ $fpkrepo = "y" || $fpkrepo = "yes" || -z $fpkrepo ]]; then
         echo "Installing gaming flatpaks..."
-        flatpak install -y com.github.Matoking. protontricks net.davidotek.pupgui2
+        flatpak install -y com.github.Matoking.protontricks net.davidotek.pupgui2
     fi
 else
     echo "Skipping..."
     continue
+fi
+
+# === Ask for other packages ===
+read -p "Would you like to install any other packages? [Y/n]" usrpkgsq
+usrpkgsq=${usrpkgsq,,}
+if [[ $usrpkgsq = "y" || $usrpkgsq = "yes" || -z $usrpkgsq ]]
+    echo "Enter the packages you woul wish to install (separated by spaces):"
+    read usrpkgs
+    usrpkgs=${usrpkgs,,}
+    
+    echo "Installing requested packages..."
+    dnf install -y $usrpkgs
+else
+    echo "Skipping..."
 fi
 
 # === Self deletion after everything ===
