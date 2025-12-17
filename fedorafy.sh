@@ -142,7 +142,7 @@ fi
 read -p "Would you like to install any other packages? [Y/n]" usrpkgsq
 usrpkgsq=${usrpkgsq,,}
 if [[ $usrpkgsq = "y" || $usrpkgsq = "yes" || -z $usrpkgsq ]]
-    echo "Enter the packages you woul wish to install (separated by spaces):"
+    echo "Enter the packages you would wish to install (separated by spaces):"
     read usrpkgs
     usrpkgs=${usrpkgs,,}
     
