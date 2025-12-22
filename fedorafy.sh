@@ -131,7 +131,7 @@ if [[ $game = "y" || $game = "yes" || -z $game ]]; then
 
     if [[ $fpkrepo = "y" || $fpkrepo = "yes" || -z $fpkrepo ]]; then
         echo "Installing gaming flatpaks..."
-        flatpak install -y com.github.Matoking.protontricks net.davidotek.pupgui2
+        flatpak install -y com.github.Matoking.protontricks net.davidotek.pupgui2 com.steamgriddb.SGDBoop
     fi
 else
     echo "Skipping..."
@@ -154,7 +154,7 @@ fi
 
 # === Self deletion after everything ===
 echo "Cleaning up..."
-trap 'rm -f -- "$0"' EXIT
+rm -f -- "$0"
 
 echo "=== Setup Complete! ==="
 read -p "Do you wish to reboot? (please make sure everything is saved) [Y/n]" reboot

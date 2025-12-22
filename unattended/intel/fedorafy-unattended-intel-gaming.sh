@@ -57,7 +57,7 @@ flatpak install -y com.github.Matoking. protontricks net.davidotek.pupgui2
 
 # === Self deletion after everything ===
 echo "Cleaning up..."
-trap 'rm -f -- "$0"' EXIT
+rm -f -- "$0"
 
 echo "=== Setup Complete! ==="
 reboot now

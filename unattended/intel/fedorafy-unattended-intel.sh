@@ -49,7 +49,7 @@ flatpak install -y com.github.tchx84.Flatseal org.localsend.localsend_app com.de
 
 # === Self deletion after everything ===
 echo "Cleaning up..."
-trap 'rm -f -- "$0"' EXIT
+rm -f -- "$0"
 
 echo "=== Setup Complete! ==="
 reboot now
