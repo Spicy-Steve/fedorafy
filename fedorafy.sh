@@ -49,14 +49,14 @@ dnf swap ffmpeg-free ffmpeg --allowerasing -y
 
 # === Install GPU acceleration packages and NVIDIA driver ===
 while true; do
-    read -p "Enter GPU vendor (AMD/NVIDIA/Intel): " gpu
+    read -p "Enter Discrete GPU vendor (AMD/NVIDIA/Intel/None): " gpu
     gpu=${gpu,,}
     case "$gpu" in
-        amd|intel|nvidia)
+        amd|intel|nvidia|none)
             break
             ;;
         *)
-            echo "Invalid entry. Please enter AMD, NVIDIA, or Intel."
+            echo "Invalid entry. Please enter AMD, NVIDIA, Intel, or None."
             ;;
     esac
 done
@@ -98,6 +98,8 @@ elif [ $gpu = "nvidia"]; then
         dnf config-manager setopt cuda-fedora42-$(uname -m).exclude=nvidia-driver,nvidia-modprobe,nvidia-persistenced,nvidia-settings,nvidia-libXNVCtrl,nvidia-xconfig
         dnf -y install cuda-toolkit xorg-x11-drv-nvidia-cuda
     fi
+elif [ $gpu = "none" ]; then
+    echo "None selected, skipping..."
 fi
 
 # === Optionally install flatpak ===
