@@ -1,3 +1,4 @@
+#!/bin/bash
 # === Detect root privilages ===
 if [[ $EUID -ne 0 ]]; then
     echo "Please run this script with sudo or as root user instead of $USER"
